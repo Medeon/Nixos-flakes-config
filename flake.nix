@@ -6,14 +6,17 @@
   
     # nixos nixpkgs github repository 
     nixpkgs.url = "nixpkgs/nixos-25.11";
+    nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
     home-manager = {
       # home-manager github repository
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-snapd.url = "github:nix-community/nix-snapd";
+    nix-snapd.inputs.nixpkgs.follows = "nixpkgs-unstable";
   };
 
-  outputs = {self, nixpkgs, home-manager, ... }: 
+  outputs = {self, nixpkgs, nixpkgs-unstable, home-manager, nix-snapd, ... }: 
     let
       # ----- SYSTEM SETTING ----- #
       systemSettings = {
@@ -28,6 +31,7 @@
       # ----- USER SETTINGS ----- #
       userSettings = {
         pkgs = nixpkgs.legacyPackages.${systemSettings.system};
+        pkgs-unstable = nixpkgs-unstable.legacyPackages.${systemSettings.system};
         username = "ejan";
         fullname = "Evert-Jan";
         email = "evertjanvandijk@mailbox.org";
@@ -37,9 +41,16 @@
     in {
       nixosConfigurations.nixos = systemSettings.lib.nixosSystem {
         system = systemSettings.system;
-        modules = [ ./configuration.nix ];
+        modules = [ 
+          ./configuration.nix 
+          nix-snapd.nixosModules.default
+          ({ config, pkgs, ... }: {
+            services.snap.enable = true;
+          })
+        ];
         specialArgs = {
           inherit systemSettings;
+          inherit userSettings;
         };
       };
       homeConfigurations.${userSettings.username} = home-manager.lib.homeManagerConfiguration {

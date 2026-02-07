@@ -16,7 +16,7 @@
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/DA13-9063";
       fsType = "vfat";
-      options = [ "fmask=0022" "dmask=0022" "iocharset=ascii" "errors=remount-ro" ];
+      options = [ "umask=0077" "iocharset=ascii" "errors=remount-ro" ];
     };
   
   swapDevices = [{

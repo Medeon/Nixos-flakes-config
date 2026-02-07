@@ -11,10 +11,14 @@
         pam_u2f
         pcsclite
         pcsc-tools
+        profile-sync-daemon
         ripgrep
+        rustdesk
         sshfs
         tmux
-    	vim
+        trezord
+        trezor-suite
+        vim
         vimPlugins.blink-ripgrep-nvim
         vimPlugins.fzf-vim
         vimPlugins.rust-vim
