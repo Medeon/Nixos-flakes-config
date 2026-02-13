@@ -13,10 +13,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-snapd.url = "github:nix-community/nix-snapd";
-    nix-snapd.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    nix-snapd.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = {self, nixpkgs, nixpkgs-unstable, home-manager, nix-snapd, ... }: 
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nix-snapd, ... }: 
     let
       # ----- SYSTEM SETTING ----- #
       systemSettings = {
@@ -26,7 +26,7 @@
         timezone = "Europe/Amsterdam";
         locale = "nl_NL.UTF-8";
         keyLayout = "nl";
-        keyMapping = "us";
+        keyMap = "us";
       };    
       # ----- USER SETTINGS ----- #
       userSettings = {
@@ -44,9 +44,7 @@
         modules = [ 
           ./configuration.nix 
           nix-snapd.nixosModules.default
-          ({ config, pkgs, ... }: {
-            services.snap.enable = true;
-          })
+          { services.snap.enable = true; }
         ];
         specialArgs = {
           inherit systemSettings;

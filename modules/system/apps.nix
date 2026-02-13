@@ -3,7 +3,9 @@
     # List packages installed in system profile. To search, run:
     # $ nix search wget
     environment.systemPackages = with pkgs; [
+        appstream
         fd
+        file
         git
         gnupg
         neovim
@@ -14,6 +16,7 @@
         profile-sync-daemon
         ripgrep
         rustdesk
+        squashfsTools
         sshfs
         tmux
         trezord

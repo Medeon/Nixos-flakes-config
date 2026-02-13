@@ -2,8 +2,13 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, systemSettings, userSettings, ... }:
 
+let 
+  locale = systemSettings.locale;
+  username = userSettings.username;
+  fullname = userSettings.fullname;
+in
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -13,6 +18,7 @@
       ./modules/system/pam.nix
       ./modules/system/fsmounts.nix
       ./modules/system/ssh.nix
+      ./modules/system/snapd.nix
     ];
     
   # Use the systemd-boot EFI boot loader.
@@ -31,30 +37,31 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = systemSettings.hostname; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
   
   # Set your time zone.
-  time.timeZone = "Europe/Amsterdam";
+  time.timeZone = systemSettings.timezone;
+   
   
   # Select internationalisation properties.
-  i18n.defaultLocale = "nl_NL.UTF-8";
-  
+  i18n.defaultLocale = locale;
+   
   i18n.extraLocaleSettings = {
-    LC_ADDRESS = "nl_NL.UTF-8";
-    LC_IDENTIFICATION = "nl_NL.UTF-8";
-    LC_MEASUREMENT = "nl_NL.UTF-8";
-    LC_MONETARY = "nl_NL.UTF-8";
-    LC_NAME = "nl_NL.UTF-8";
-    LC_NUMERIC = "nl_NL.UTF-8";
-    LC_PAPER = "nl_NL.UTF-8";
-    LC_TELEPHONE = "nl_NL.UTF-8";
-    LC_TIME = "nl_NL.UTF-8";
+    LC_ADDRESS = locale;
+    LC_IDENTIFICATION = locale;
+    LC_MEASUREMENT = locale;
+    LC_MONETARY = locale;
+    LC_NAME = locale;
+    LC_NUMERIC = locale;
+    LC_PAPER = locale;
+    LC_TELEPHONE = locale;
+    LC_TIME = locale;
   };
-
+  
   # Enable the KDE Desktop environment.
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
@@ -66,12 +73,12 @@
 
   # Configure keymap in X11
   services.xserver.xkb = {
-    layout = "nl";
-    variant = "us";
+    layout = systemSettings.keyLayout;
+    variant = systemSettings.keyMap;
   };
 
   # Configure console keymap
-  console.keyMap = "us";
+  console.keyMap = systemSettings.keyMap;
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
@@ -88,17 +95,18 @@
     # no need to redefine it in your config for now)
     #media-session.enable = true;
   };
+
   
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.ejan = {
+  users.users.${username} = {
     isNormalUser = true;
-    description = "Evert-Jan";
+    description = fullname;
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
       #  For user packages look at: ~/.dotfiles/nixos/modules/user/apps.nix. The alias is "apps".  
     ];
   };
-  
+
   #services.flatpak.enable = true;
 
   # Allow unfree packages
@@ -106,8 +114,12 @@
  
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-   environment.systemPackages = with pkgs; [ 
+  environment.systemPackages = with pkgs; [ 
     # For systemwide packages look at: ~/.dotfiles/nixos/modules/system/apps.nix. The alias is "sysapps".
+  ];
+
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -119,14 +131,14 @@
   };
 
   # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
+  # networking.firewall.allowedTCPPorts = [ 443 ];
+  # networking.firewall.allowedUDPPorts = [ 443 ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
+  # on your system were taken. It‘s perf${userSettings.username}ectly fine and recommended to leave
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
