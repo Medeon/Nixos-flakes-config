@@ -13,28 +13,9 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./modules/system/apps.nix
-      ./modules/system/systemd.nix
-      ./modules/system/pam.nix
-      ./modules/system/fsmounts.nix
-      ./modules/system/ssh.nix
-      ./modules/system/snapd.nix
+      ./modules/system/defaults.nix
     ];
     
-  # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  # Use latest kernel.
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernel.sysctl = { "vm.swappiness" = 10; };  
-  boot.kernelParams = [
-    "zswap.enabled=1" # enables zswap
-    "zswap.compressor=zstd" # compression algorithm
-    "zswap.max_pool_percent=20" # maximum percentage of RAM that zswap is allowed to use
-    "zswap.shrinker_enabled=1" # whether to shrink the pool proactively on high memory pressure
-  ];
-
   # Enable networking
   networking.networkmanager.enable = true;
   networking.hostName = systemSettings.hostname; # Define your hostname.
@@ -46,7 +27,6 @@ in
   # Set your time zone.
   time.timeZone = systemSettings.timezone;
    
-  
   # Select internationalisation properties.
   i18n.defaultLocale = locale;
    
@@ -68,6 +48,7 @@ in
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
+  services.xserver.videoDrivers = [ "amdgpu" ];
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
@@ -103,7 +84,7 @@ in
     description = fullname;
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-      #  For user packages look at: ~/.dotfiles/nixos/modules/user/apps.nix. The alias is "apps".  
+      #  For user packages look at: ~/.dotfiles/nixos/modules/user/apps.ix. The alias is "apps".  
     ];
   };
 
@@ -145,11 +126,11 @@ in
   system.stateVersion = "25.11"; # Did you read the comment?
 
   # Automatic Garbage Collection
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
+  # nix.gc = {
+  #   automatic = true;
+  #   dates = "weekly";
+  #   options = "--delete-older-than 7d";
+  # };
 
   nix.settings.extra-experimental-features = [ "nix-command" "flakes" ];
 }

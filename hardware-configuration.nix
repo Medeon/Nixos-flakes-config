@@ -9,9 +9,23 @@
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" ];
-  boot.initrd.kernelModules = [ ];
+  boot.initrd.kernelModules = [ "amdgpu" ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
+
+  # Use latest kernel.
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernel.sysctl = { "vm.swappiness" = 10; };
+  boot.kernelParams = [
+    "zswap.enabled=1" # enables zswap
+    "zswap.compressor=zstd" # compression algorithm
+    "zswap.max_pool_percent=20" # maximum percentage of RAM that zswap is allowed to use
+    "zswap.shrinker_enabled=1" # whether to shrink the pool proactively on high memory pressure
+  ];
+
+  # Use the systemd-boot EFI boot loader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/DA13-9063";
@@ -23,6 +37,10 @@
     device = "/swap/swapfile";
     size = 8*1024;
   }];
+
+  hardware.graphics.extraPackages = with pkgs; [
+    rocmPackages.clr.icd
+  ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

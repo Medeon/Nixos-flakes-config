@@ -1,10 +1,7 @@
 { config, pkgs, userSettings, systemSettings, ... }:
 {
   imports = [
-    ./modules/user/sh.nix
-    ./modules/user/git.nix
-    ./modules/user/vim.nix
-    ./modules/user/apps.nix
+    ./modules/user/defaults.nix
   ];     
   
   # Home Manager needs a bit of information about you and the paths it should
@@ -69,7 +66,7 @@
   #
   # or
   #
-  #  /etc/profiles/per-user/ejan/etc/profile.d/hm-session-vars.sh
+  #  /etc/profiles/per-user/${userSettings.username}/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
     EDITOR = "vim";
