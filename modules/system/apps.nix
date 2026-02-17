@@ -1,13 +1,14 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, pkgs-unstable, lib, ... }:
 {
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = (with pkgs; [
     alsa-utils
     androidenv.androidPkgs.platform-tools
     appstream
     btrbk
     btrfs-assistant
+    clinfo
     collision
     duf
     fd
@@ -51,5 +52,11 @@
     yubico-pam
     yubikey-manager
     yubikey-personalization
-  ];
+  ])
+  
+  ++
+  
+  (with pkgs-unstable; [
+    # lact
+  ]);  
 }

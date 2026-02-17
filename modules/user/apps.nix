@@ -6,7 +6,7 @@
     bluemail
     brave
     chromium
-    exodus
+    # exodus
     gimp
     inkscape
     kdePackages.dolphin-plugins

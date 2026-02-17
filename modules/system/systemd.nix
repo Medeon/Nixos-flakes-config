@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, pkgs-unstable, lib, ... }:
 {
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -10,19 +10,19 @@
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
-
-  # Udev rules for yubikey
   services.udev.packages = with pkgs; [ yubikey-personalization libu2f-host ];
-
   # Enable pcscd for smartcard support
   services.pcscd.enable = true;
-  
-  # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+  
+  # systemd.packages = with pkgs-unstable; [ lact ];
+  # systemd.services.lactd.wantedBy = ["multi-user.target"];
+
+  # services.lact.enable = true;
 
   systemd.tmpfiles.rules = [
-    "L /var/lib/snapd/hostfs/etc/passwd - - - - /etc/passwd"
-    "L /var/lib/snapd/hostfs/etc/group - - - - /etc/group"
+    "L /var/lib/snapd/hostfs/etc/passwd - - - - /etc/passwd" # Bind mounts to snapd hostfs
+    "L /var/lib/snapd/hostfs/etc/group - - - - /etc/group"   # for access to etc.. passwd & group 
     "L+ /opt/rocm/hip - - - - ${pkgs.rocmPackages.clr}"
   ];
 }

@@ -20,7 +20,6 @@
     let
       # ----- SYSTEM SETTING ----- #
       systemSettings = {
-        lib = nixpkgs.lib;
         system = "x86_64-linux";
         hostname = "nixos";
         timezone = "Europe/Amsterdam";
@@ -30,17 +29,24 @@
       };    
       # ----- USER SETTINGS ----- #
       userSettings = {
-        pkgs = nixpkgs.legacyPackages.${systemSettings.system};
-        pkgs-unstable = nixpkgs-unstable.legacyPackages.${systemSettings.system};
         username = "ejan";
         fullname = "Evert-Jan";
         email = "evertjanvandijk@mailbox.org";
         dir = "~/.dotfiles/nixos";
         editor = "vim";
-      };    
-    in {
-      nixosConfigurations.nixos = systemSettings.lib.nixosSystem {
+      };
+      lib = nixpkgs.lib;
+      pkgs = import nixpkgs {
         system = systemSettings.system;
+        config.allowUnfree = true;
+      };
+      pkgs-unstable = import nixpkgs-unstable {
+        system = systemSettings.system;
+        config.allowUnfree = true;
+      };
+    in {
+      nixosConfigurations.nixos = lib.nixosSystem {
+        inherit pkgs;
         modules = [ 
           ./configuration.nix 
           nix-snapd.nixosModules.default
@@ -49,15 +55,17 @@
         specialArgs = {
           inherit systemSettings;
           inherit userSettings;
+          inherit pkgs-unstable;
         };
       };
       homeConfigurations.${userSettings.username} = home-manager.lib.homeManagerConfiguration {
-        pkgs =  userSettings.pkgs;
+        inherit pkgs;
         modules = [ 
           ./home.nix
         ];
         extraSpecialArgs = {
           inherit userSettings;
+          inherit pkgs-unstable;
         };
       };
     };

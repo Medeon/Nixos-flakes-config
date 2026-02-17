@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, systemSettings, userSettings, ... }:
+{ config, pkgs, pkgs-unstable, lib, systemSettings, userSettings, ... }:
 
 let 
   locale = systemSettings.locale;
@@ -77,7 +77,12 @@ in
     #media-session.enable = true;
   };
 
-  
+  # Allow unfree packages
+  # nixpkgs.config.allowUnfree = true;
+  # nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+  #   "bluemail"
+  # ];
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${username} = {
     isNormalUser = true;
@@ -89,9 +94,6 @@ in
   };
 
   #services.flatpak.enable = true;
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
  
   # List packages installed in system profile. To search, run:
   # $ nix search wget
