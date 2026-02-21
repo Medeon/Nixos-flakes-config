@@ -57,6 +57,6 @@
   ++
   
   (with pkgs-unstable; [
-    # lact
+    # 
   ]);  
 }

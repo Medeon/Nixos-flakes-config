@@ -36,9 +36,13 @@
         editor = "vim";
       };
       lib = nixpkgs.lib;
+      overlays = [
+        (import ./overlays/psd-brave.nix)
+      ];
       pkgs = import nixpkgs {
         system = systemSettings.system;
         config.allowUnfree = true;
+        inherit overlays; 
       };
       pkgs-unstable = import nixpkgs-unstable {
         system = systemSettings.system;
@@ -46,11 +50,14 @@
       };
     in {
       nixosConfigurations.nixos = lib.nixosSystem {
-        inherit pkgs;
         modules = [ 
           ./configuration.nix 
           nix-snapd.nixosModules.default
-          { services.snap.enable = true; }
+          { 
+            services.snap.enable = true; 
+            nixpkgs.config.allowUnfree = true;
+            nixpkgs.overlays = overlays;
+          }
         ];
         specialArgs = {
           inherit systemSettings;

@@ -2,4 +2,5 @@
 {
   services.avahi.enable = true;
   services.avahi.nssmdns = true;
+  services.psd.enable = true;
 }

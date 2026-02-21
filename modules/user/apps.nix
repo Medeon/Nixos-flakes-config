@@ -1,8 +1,8 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, pkgs-unstable, lib, ... }:
 {
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = with pkgs; [
+  home.packages = (with pkgs; [
     bluemail
     brave
     chromium
@@ -41,12 +41,12 @@
     nextcloud-client
     obs-studio
     onlyoffice-desktopeditors
-    pixelflasher
+    opencode
     tree
     trezord
     trezor-suite
     variety
-    vscode
+    vscodium
     vlc
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
@@ -60,7 +60,14 @@
     # (pkgs.writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
-  ];
+  ])
+
+  ++
+
+  (with pkgs-unstable; [
+    pixelflasher  
+  ]);
+
   xdg.desktopEntries.bluemail = {
     name = "BlueMail";
     exec = "bluemail --disable-gpu-sandbox";
