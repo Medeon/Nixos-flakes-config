@@ -1,23 +1,26 @@
-{ config, lib, pkgs, ... }:
-{
-  programs.ssh = {
-    startAgent = true;
-    enableAskPassword = true;
-    extraConfig = "
-      Host userver
-        Hostname 192.168.1.241
-        User ejan
-        Port 5588
-        IdentitiesOnly yes
-        IdentityFile ~/.ssh/id_nixos
+{ config, pkgs, userSettings, ... }: {
 
-      Host windows11
-        Hostname 192.168.1.242
-        User Evert-Jan
-        Port 22
+  sops.templates."btrbk-ubuntu-ssh" = {
+    path = "/etc/ssh/ssh_config.d/btrbk-ubuntu.conf";
+    owner = "root";
+    group = "btrbk";
+    mode = "0640";
+    content = ''
+      Host btrbk-ubuntu
+        Hostname ${config.sops.placeholder."ssh/ubuntu/ip-address"}
+        User btrbk
+        Port ${config.sops.placeholder."ssh/ubuntu/port"}
         IdentitiesOnly yes
-        IdentityFile ~/.ssh/id_ed25519
-    ";
+        IdentityFile /var/lib/btrbk/.ssh/id_btrbk_key
+    '';
+  };
+
+  programs.ssh = {
+    startAgent = false;
+    enableAskPassword = true;
+    extraConfig = ''
+      Include /etc/ssh/ssh_config.d/*.conf
+    '';
   };
 
   environment.variables = {

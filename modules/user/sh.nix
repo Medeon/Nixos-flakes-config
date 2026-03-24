@@ -1,12 +1,11 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 let 
   myAliases = {
     ll = "ls -la";
-    nxr-s = "sudo nixos-rebuild switch --flake ~/.dotfiles/nixos";
-    hman-s = "home-manager switch --flake ~/.dotfiles/nixos";
-    sysapps = "vim ~/.dotfiles/nixos/modules/system/apps.nix";
+    sapps = "vim ~/.dotfiles/nixos/modules/system/apps.nix";
     apps = "vim ~/.dotfiles/nixos/modules/user/apps.nix";
-    home-man = "vim ~/.dotfiles/nixos/home.nix";
+    flake = "vim ~/.dotfiles/nixos/flake.nix";
+    home = "vim ~/.dotfiles/nixos/home.nix";
     config = "vim ~/.dotfiles/nixos/configuration.nix";
     cdnixos = "cd ~/.dotfiles/nixos";
     cdsystem = "cd ~/.dotfiles/nixos/modules/system";
@@ -16,8 +15,7 @@ let
     free = "free -m";
     rm = "rm -i";
   };
-in  
-{
+in {
   programs.bash = {
     enable = true;
     shellAliases = myAliases;

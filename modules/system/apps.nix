@@ -6,7 +6,6 @@
     alsa-utils
     androidenv.androidPkgs.platform-tools
     appstream
-    btrbk
     btrfs-assistant
     clinfo
     collision
@@ -21,6 +20,7 @@
     grsync
     hplip
     htop
+    kdePackages.ksshaskpass
     mcfly
     neofetch
     neovim
@@ -35,9 +35,9 @@
     pass
     pcsclite
     pcsc-tools
-    profile-sync-daemon
     ripgrep
     rustdesk
+    sops
     squashfsTools
     sshfs
     sshpass
@@ -52,6 +52,7 @@
     yubico-pam
     yubikey-manager
     yubikey-personalization
+    zstd
   ])
   
   ++

@@ -1,13 +1,12 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
-    programs.git = {
-        enable = true;
-        settings = {    
-            user = {
-                name = "Evert-Jan van Dijk";
-                email = "evertjanvandijk@mailbox.org";
-            };
-            init.defaultBranch = "main";
-        };
+  programs.git = {
+    enable = true;
+    includes = [
+      { path = "~/.config/git/identity"; } #declared in /modules/user/sops.nix
+    ];
+    settings = {
+      init.defaultBranch = "main";
     };
+  };
 }

@@ -7,7 +7,7 @@
       "ssd"
       "space_cache=v2"
       "discard=async"
-      "compress-force=zstd:1"
+      "compress-force=zstd"
       "commit=120"
     ];
     fsType = "btrfs";

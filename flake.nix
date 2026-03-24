@@ -7,18 +7,33 @@
     # nixos nixpkgs github repository 
     nixpkgs.url = "nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
+    
     home-manager = {
       # home-manager github repository
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    
     nix-snapd.url = "github:nix-community/nix-snapd";
     nix-snapd.inputs.nixpkgs.follows = "nixpkgs";
+    
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # --------------- PRIVATE REPOSITORY --------------- #
+    mysecrets = {
+      url = "git+ssh://git@gitlab.com/ejandev/nix-secrets.git?ref=main&shallow=1";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nix-snapd, ... }: 
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nix-snapd, sops-nix, nix-index-database, ... }@inputs: 
     let
-      # ----- SYSTEM SETTING ----- #
+      # --------------- SYSTEM SETTING --------------- #
       systemSettings = {
         system = "x86_64-linux";
         hostname = "nixos";
@@ -28,11 +43,10 @@
         keyMap = "us";
       };    
       # ----- USER SETTINGS ----- #
-      userSettings = {
+      userSettings = rec {
         username = "ejan";
         fullname = "Evert-Jan";
-        email = "evertjanvandijk@mailbox.org";
-        dir = "~/.dotfiles/nixos";
+        flakeDir = "/home/${username}/.dotfiles/nixos";
         editor = "vim";
       };
       lib = nixpkgs.lib;
@@ -53,6 +67,8 @@
         modules = [ 
           ./configuration.nix 
           nix-snapd.nixosModules.default
+          sops-nix.nixosModules.sops
+          nix-index-database.nixosModules.default
           { 
             services.snap.enable = true; 
             nixpkgs.config.allowUnfree = true;
@@ -60,6 +76,7 @@
           }
         ];
         specialArgs = {
+          inherit inputs;
           inherit systemSettings;
           inherit userSettings;
           inherit pkgs-unstable;
@@ -69,8 +86,10 @@
         inherit pkgs;
         modules = [ 
           ./home.nix
+          sops-nix.homeManagerModules.sops
         ];
         extraSpecialArgs = {
+          inherit inputs;
           inherit userSettings;
           inherit pkgs-unstable;
         };

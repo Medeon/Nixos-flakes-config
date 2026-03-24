@@ -1,4 +1,4 @@
-{ config, pkgs, pkgs-unstable, lib, ... }:
+{ pkgs, pkgs-unstable, ... }:
 {
   # The home.packages option allows you to install Nix packages into your
   # environment.
@@ -42,12 +42,14 @@
     obs-studio
     onlyoffice-desktopeditors
     opencode
+    telegram-desktop
     tree
     trezord
     trezor-suite
     variety
     vscodium
     vlc
+    yamllint
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
     # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
@@ -68,10 +70,4 @@
     pixelflasher  
   ]);
 
-  xdg.desktopEntries.bluemail = {
-    name = "BlueMail";
-    exec = "bluemail --disable-gpu-sandbox";
-    icon = "${pkgs.bluemail}/share/icons/hicolor/1024x1024/apps/bluemail.png";
-    categories = [ "Office" ];
-  };
 }

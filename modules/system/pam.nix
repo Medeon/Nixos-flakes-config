@@ -1,7 +1,8 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, ... }:
 {  
     security.pam = {
         u2f = {    
+            enable = true;
             control = "required";
             settings = {
                 authfile = "/etc/nixos/Yubico/u2f_keys";
@@ -17,8 +18,8 @@
                 enableKwallet = true;
             };
             sudo = {
+                #control = "sufficient";
                 u2fAuth = true;
-                unixAuth = true;
             };
             sddm = { 
                 unixAuth = true;
@@ -26,6 +27,7 @@
                 enableKwallet = true;
             };    
             sddm-autologin = {
+                unixAuth = true;
                 u2fAuth = true;
             };
         };

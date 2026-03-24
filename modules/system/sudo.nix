@@ -1,18 +1,17 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
-  #security.sudo = {
-   # enable = true;
-    #wheelNeedsPassword = false; # Allows wheel group to use sudo without password
-    # extraRules = [
-    #   {
-    #     users = [ "ejan" ];
-    #     commands = [
-    #       {
-    #         command = "/run/current-system/sw/bin/psd-overlay-helper";
-    #         options = [ "NOPASSWD" ];
-    #       }
-    #     ];
-    #   }
-    # ];
+  security.sudo = {
+    enable = true;
+    extraRules = [
+      {
+        users = [ "ejan" ];
+        commands = [
+          {
+            command = "${pkgs.profile-sync-daemon}/bin/psd-overlay-helper";
+            options = [ "NOPASSWD" ];
+          }
+        ];
+      }
+    ];
   };
 }

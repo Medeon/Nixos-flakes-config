@@ -8,8 +8,7 @@ let
   locale = systemSettings.locale;
   username = userSettings.username;
   fullname = userSettings.fullname;
-in
-{
+in {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
@@ -17,12 +16,15 @@ in
     ];
     
   # Enable networking
+  networking.hostName = systemSettings.hostname;
   networking.networkmanager.enable = true;
-  networking.hostName = systemSettings.hostname; # Define your hostname.
+  networking.networkmanager.unmanaged = [ "enp6s0" ];
+  systemd.network.enable = true; # For reference: /modules/system/sops.nix
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
   
   # Set your time zone.
   time.timeZone = systemSettings.timezone;
@@ -77,28 +79,23 @@ in
     #media-session.enable = true;
   };
 
-  # Allow unfree packages
-  # nixpkgs.config.allowUnfree = true;
-  # nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-  #   "bluemail"
-  # ];
-
   # Define a user account. Don't forget to set a password with ‘passwd’.
+  sops.secrets."user/${username}/password".neededForUsers = true;
+  
   users.users.${username} = {
     isNormalUser = true;
     description = fullname;
+    hashedPasswordFile = config.sops.secrets."user/${username}/password".path;
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
       #  For user packages look at: ~/.dotfiles/nixos/modules/user/apps.ix. The alias is "apps".  
     ];
   };
-
-  #services.flatpak.enable = true;
- 
+   
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [ 
-    # For systemwide packages look at: ~/.dotfiles/nixos/modules/system/apps.nix. The alias is "sysapps".
+    # For systemwide packages look at: ~/.dotfiles/nixos/modules/system/apps.nix. The alias is "sapps".
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -110,8 +107,8 @@ in
   };
 
   # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ 443 ];
-  # networking.firewall.allowedUDPPorts = [ 443 ];
+  # networking.firewall.allowedTCPPorts = [ ];
+  # networking.firewall.allowedUDPPorts = [ ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
@@ -122,13 +119,6 @@ in
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.11"; # Did you read the comment?
-
-  # Automatic Garbage Collection
-  # nix.gc = {
-  #   automatic = true;
-  #   dates = "weekly";
-  #   options = "--delete-older-than 7d";
-  # };
-
+  
   nix.settings.extra-experimental-features = [ "nix-command" "flakes" ];
 }

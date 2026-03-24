@@ -1,4 +1,4 @@
-{ config, pkgs, userSettings, systemSettings, ... }:
+{ config, pkgs, lib, userSettings, systemSettings, ... }:
 {
   imports = [
     ./modules/user/defaults.nix
@@ -74,4 +74,8 @@
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
+  # Enable xwayland desktop entries for brave, chromium and telegram-desktop.
+  # Set to false to disable at once, or override individually.
+  applications.xwayland.enable = true;
 }
