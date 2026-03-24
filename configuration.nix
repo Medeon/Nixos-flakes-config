@@ -18,8 +18,6 @@ in {
   # Enable networking
   networking.hostName = systemSettings.hostname;
   networking.networkmanager.enable = true;
-  networking.networkmanager.unmanaged = [ "enp6s0" ];
-  systemd.network.enable = true; # For reference: /modules/system/sops.nix
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";

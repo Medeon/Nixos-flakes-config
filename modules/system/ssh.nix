@@ -1,10 +1,10 @@
 { config, pkgs, userSettings, ... }: {
 
   sops.templates."btrbk-ubuntu-ssh" = {
-    path = "/etc/ssh/ssh_config.d/btrbk-ubuntu.conf";
-    owner = "root";
+    path = "/var/lib/btrbk/.ssh/config";
+    owner = "btrbk";
     group = "btrbk";
-    mode = "0640";
+    mode = "0600";
     content = ''
       Host btrbk-ubuntu
         Hostname ${config.sops.placeholder."ssh/ubuntu/ip-address"}
@@ -18,10 +18,6 @@
   programs.ssh = {
     startAgent = false;
     enableAskPassword = true;
-    extraConfig = ''
-      Match User btrbk
-        Include /etc/ssh/ssh_config.d/btrbk-ubuntu.conf
-    '';
   };
 
   environment.variables = {
