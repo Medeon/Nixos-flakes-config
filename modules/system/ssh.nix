@@ -19,7 +19,8 @@
     startAgent = false;
     enableAskPassword = true;
     extraConfig = ''
-      Include /etc/ssh/ssh_config.d/*.conf
+      Match User btrbk
+        Include /etc/ssh/ssh_config.d/btrbk-ubuntu.conf
     '';
   };
 
