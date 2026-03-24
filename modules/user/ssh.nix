@@ -28,7 +28,7 @@
     matchBlocks = {
       "*" = {};
       "git-hosts" = {
-        host = "github.com gitlab.com";
+        host = "github.com gitlab.com userver";
         user = "git";
         identitiesOnly = true;
         identityFile = "~/.ssh/id_nixos";
