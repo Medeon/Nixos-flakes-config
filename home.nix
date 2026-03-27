@@ -77,5 +77,5 @@
 
   # Enable xwayland desktop entries for brave, chromium and telegram-desktop.
   # Set to false to disable at once, or override individually.
-  applications.xwayland.enable = true;
+  # applications.xwayland.enable = true;
 }

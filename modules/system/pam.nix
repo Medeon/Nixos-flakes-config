@@ -7,9 +7,7 @@
             settings = {
                 authfile = "/etc/nixos/Yubico/u2f_keys";
                 cue = true;
-		        #appid = "pam://$hostname";
-                #origin = "pam://$hostname";
-            };  
+		    };  
         };    
         services = {
             login = {

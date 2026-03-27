@@ -17,10 +17,8 @@
     git
     git-lfs
     gnupg
-    grsync
     hplip
     htop
-    kdePackages.ksshaskpass
     mcfly
     neofetch
     neovim
@@ -36,7 +34,6 @@
     pcsclite
     pcsc-tools
     ripgrep
-    rustdesk
     sops
     squashfsTools
     sshfs

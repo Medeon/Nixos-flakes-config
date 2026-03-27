@@ -8,6 +8,7 @@
     chromium
     # exodus
     gimp
+    grsync
     inkscape
     kdePackages.dolphin-plugins
     kdePackages.elisa
@@ -28,6 +29,7 @@
     kdePackages.kdenlive
     kdePackages.kolourpaint
     kdePackages.krecorder
+    kdePackages.ksshaskpass
     kdePackages.ksystemlog
     kdePackages.ktorrent
     kdePackages.partitionmanager
@@ -42,6 +44,7 @@
     obs-studio
     onlyoffice-desktopeditors
     opencode
+    rustdesk
     telegram-desktop
     tree
     trezord

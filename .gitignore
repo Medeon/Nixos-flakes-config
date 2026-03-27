@@ -1,4 +1,4 @@
 *.txt
 *.bak
 .opencode
-result
+/result

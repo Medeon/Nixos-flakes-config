@@ -1,7 +1,7 @@
 { config, pkgs, userSettings, ... }: {
 
   sops.templates."btrbk-ubuntu-ssh" = {
-    path = "/var/lib/btrbk/.ssh/config";
+    path = "/run/secrets/btrbk-ssh-config";
     owner = "btrbk";
     group = "btrbk";
     mode = "0600";

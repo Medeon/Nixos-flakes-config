@@ -39,5 +39,8 @@
     systemd.tmpfiles.rules = [
       "d /btrfs-toplvl/@home-snapshots/btrbk_snapshots 0755 root root"
       "f /var/log/btrbk.log 0640 btrbk btrbk"
+      "L+ /var/lib/btrbk/.ssh/config - - - - /run/secrets/btrbk-ssh-config"
     ];
+
+    systemd.services.btrbk-btrbk.after = [ "sops-install-secrets.service" ];
   }
