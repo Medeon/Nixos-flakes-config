@@ -24,7 +24,7 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # --------------- PRIVATE REPOSITORY --------------- #
+    # ------------------- PRIVATE REPOSITORY ------------------- #
     mysecrets = {
       url = "git+ssh://git@gitlab.com/ejandev/nix-secrets.git?ref=main&shallow=1";
       flake = false;
@@ -33,7 +33,7 @@
 
   outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nix-snapd, sops-nix, nix-index-database, ... }@inputs: 
     let
-      # --------------- SYSTEM SETTING --------------- #
+      # ------------------- SYSTEM SETTINGS -------------------- #
       systemSettings = {
         system = "x86_64-linux";
         hostname = "nixos";
@@ -42,7 +42,7 @@
         keyLayout = "nl";
         keyMap = "us";
       };    
-      # ----- USER SETTINGS ----- #
+      # ------------------- USER SETTINGS --------------------- #
       userSettings = rec {
         username = "ejan";
         fullname = "Evert-Jan";

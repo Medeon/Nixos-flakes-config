@@ -12,15 +12,6 @@ in {
     secrets."user/${username}/password" = {};
     secrets."user/${username}/email" = {};
     secrets."user/${username}/fullname" = {};
-
-    templates."git-identity" = {
-      path = "/home/${username}/.config/git/identity";
-      content = ''
-        [user]
-          name = ${config.sops.placeholder."user/${username}/fullname"}
-          email = ${config.sops.placeholder."user/${username}/email"}
-      '';
-    };
     secrets."ssh/ubuntu/ip-address" = {};
     secrets."ssh/ubuntu/port" = {};
     secrets."ssh/windows/ip-address" = {};
