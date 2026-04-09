@@ -1,5 +1,6 @@
-{ pkgs, ... }:
+{ pkgs, userSettings, ... }:
 let 
+  username = userSettings.username;
   myAliases = {
     ll = "ls -la";
     sapps = "vim ~/.dotfiles/nixos/modules/system/apps.nix";
@@ -19,5 +20,8 @@ in {
   programs.bash = {
     enable = true;
     shellAliases = myAliases;
+    sessionVariables = {
+      PASSWORD_STORE_DIR = "/run/media/${username}/Sec_Backup/.password-store";
+    };
   };
 }

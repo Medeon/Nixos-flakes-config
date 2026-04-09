@@ -18,6 +18,7 @@ in {
     ];
     settings = {
       init.defaultBranch = "main";
+      core.symlinks = false;
     };
   };
 }

@@ -16,7 +16,6 @@
     fish
     git
     git-lfs
-    gnupg
     hplip
     htop
     mcfly

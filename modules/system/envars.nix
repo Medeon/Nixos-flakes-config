@@ -4,6 +4,6 @@ let
 in {
   environment.sessionVariables = {
     NH_FLAKE = "/home/${username}/.dotfiles/nixos";
-    PASSWORD_STORE_DIR = "/media/${username}/Sec_Backup/.password-store";
+    PINENTRY_KDE_USE_WALLET = "1";
   };
 }

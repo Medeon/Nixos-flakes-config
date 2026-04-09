@@ -17,6 +17,7 @@
     kdePackages.kalk
     kdePackages.kate
     kdePackages.kcolorchooser
+    kdePackages.kdeconnect-kde
     kdePackages.kdeplasma-addons
     kdePackages.kfind
     kdePackages.kgamma

@@ -36,7 +36,8 @@
     #   echo "Hello, ${config.home.username}!"
     # '')
   ];
-
+  
+  xdg.enable = true;
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
   home.file = {
@@ -72,10 +73,7 @@
     EDITOR = "vim";
   };
 
-  # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
-
   # Enable xwayland desktop entries for brave, chromium and telegram-desktop.
   # Set to false to disable at once, or override individually.
-  # applications.xwayland.enable = true;
+  applications.xwayland.enable = true;
 }
