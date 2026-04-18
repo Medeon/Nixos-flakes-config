@@ -23,10 +23,18 @@
                 unixAuth = true;
                 u2fAuth = true;
                 enableKwallet = true;
+                kwallet = {
+                    enable = true;
+                    package = pkgs.kdePackages.kwallet-pam;
+                };
             };    
             sddm-autologin = {
                 unixAuth = true;
                 u2fAuth = true;
+                kwallet = {
+                    enable = true;
+                    package = pkgs.kdePackages.kwallet-pam;
+                };
             };
         };
     };

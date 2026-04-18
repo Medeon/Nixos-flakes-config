@@ -1,4 +1,10 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, userSettings, ... }:
+let
+  keepassxc-unlock-script = pkgs.writeShellScript "keepassxc-unlock" ''
+    ${pkgs.kdePackages.kwallet}/bin/kwallet-query -r KeepassXC kdewallet | \
+      ${pkgs.keepassxc}/bin/keepassxc --pw-stdin /home/${userSettings.username}/.local/share/keepassxc/Passwords.kdbx
+  '';
+in
 {
   options.applications.keepassxc-unlock.enable =
     lib.mkEnableOption "keepassxc-unlock desktop entry";
@@ -7,8 +13,8 @@
     xdg.desktopEntries.keepassxc-unlock = {
       name    = "Keepass-unlock";
       comment = "Unlock your KeepassXC vault";
-      exec    = "kwallet-query -r KeepassXC kdewallet | keepassxc --pw-stdin ~/.local/share/keepassxc/passwords.kdbx";
-      icon    = "keepassxc-unlocked.svg";
+      exec    = "${keepassxc-unlock-script}";
+      icon    = "keepassxc-unlocked";
     };
   };
 }

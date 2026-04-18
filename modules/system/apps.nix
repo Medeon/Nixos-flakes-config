@@ -27,6 +27,7 @@
     nvme-cli
     openh264
     openssh
+    kdePackages.kwallet-pam
     pam_gnupg
     pam_u2f
     pass
