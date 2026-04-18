@@ -76,6 +76,8 @@ in {
     #media-session.enable = true;
   };
 
+  hardware.bluetooth.enable = true;
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   sops.secrets."user/${username}/password".neededForUsers = true;
   

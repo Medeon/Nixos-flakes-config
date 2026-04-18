@@ -76,4 +76,7 @@
   # Enable xwayland desktop entries for brave, chromium and telegram-desktop.
   # Set to false to disable at once, or override individually.
   applications.xwayland.enable = true;
+
+  # Unlock KeepassXC vault via kwallet desktop entry.
+  applications.keepassxc-unlock.enable = true;
 }

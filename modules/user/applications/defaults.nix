@@ -4,6 +4,7 @@
     ./bluemail.nix
     ./brave.nix
     ./chromium.nix
+    ./keepassxc-unlock.nix
     ./telegram-desktop.nix
   ];
 
