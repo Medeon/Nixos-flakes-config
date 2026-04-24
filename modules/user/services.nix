@@ -4,6 +4,7 @@
     psd = {
       enable = true;
       resyncTimer = "1h";
+      browsers = [ ];
     };
     gpg-agent = {
       enable = true;
