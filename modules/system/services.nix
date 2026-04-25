@@ -6,6 +6,5 @@
   services.openssh.enable = true;
   services.avahi.enable = true;
   services.avahi.nssmdns4 = true;
-  
-  #services.flatpak.enable = true;
+  services.flatpak.enable = true;
 }

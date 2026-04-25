@@ -3,6 +3,7 @@
   imports = [
     ./applications/defaults.nix
     ./apps.nix
+    ./flatpaks.nix
     ./git.nix
     ./programs.nix
     ./services.nix

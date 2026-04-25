@@ -4,9 +4,12 @@
 { config, lib, pkgs, modulesPath, ... }:
 
 {
-  imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
-    ];
+  imports = [ 
+      (modulesPath + "/installer/scan/not-detected.nix")
+      ./modules/system/btrfs.nix
+  ];
+
+  mySystem.btrfs.enable = true;
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ "amdgpu" ];
@@ -24,8 +27,20 @@
   ];
 
   # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader = { 
+    efi.canTouchEfiVariables = true;
+    systemd-boot = {
+      enable = true;
+      edk2-uefi-shell.enable = true;
+      edk2-uefi-shell.sortKey = "z_edk2";
+      extraEntries."linux-mint.conf" = ''
+        title  Linux Mint Debian Edition
+        efi    /efi/edk2-uefi-shell/shell.efi
+        options -nointerrupt -nomap -noversion HD1b:EFI\debian\shimx64.efi
+        sort-key y_lmde
+      '';
+    };  
+  };
 
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/DA13-9063";

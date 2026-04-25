@@ -6,7 +6,6 @@
     bluemail
     brave
     chromium
-    # exodus
     gimp
     grsync
     inkscape

@@ -87,7 +87,7 @@ in {
     hashedPasswordFile = config.sops.secrets."user/${username}/password".path;
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-      #  For user packages look at: ~/.dotfiles/nixos/modules/user/apps.ix. The alias is "apps".  
+      #  For user packages look at: ~/.dotfiles/nixos/modules/user/apps.nix. The alias is "apps".  
     ];
   };
    

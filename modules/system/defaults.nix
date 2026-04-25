@@ -5,7 +5,6 @@
     ./btrbk.nix
     ./envars.nix
     ./fonts.nix
-    ./btrfs.nix
     ./network.nix
     ./pam.nix
     ./programs.nix

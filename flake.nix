@@ -17,6 +17,8 @@
     nix-snapd.url = "github:nix-community/nix-snapd";
     nix-snapd.inputs.nixpkgs.follows = "nixpkgs";
     
+    flatpaks.url = "github:in-a-dil-emma/declarative-flatpak/latest";
+
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -31,7 +33,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nix-snapd, sops-nix, nix-index-database, ... }@inputs: 
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nix-snapd, flatpaks, sops-nix, nix-index-database, ... }@inputs: 
     let
       # ------------------- SYSTEM SETTINGS -------------------- #
       systemSettings = {
@@ -87,6 +89,7 @@
         modules = [ 
           ./home.nix
           sops-nix.homeManagerModules.sops
+          flatpaks.homeModules.default
         ];
         extraSpecialArgs = {
           inherit inputs;

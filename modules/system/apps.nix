@@ -10,6 +10,7 @@
     clinfo
     collision
     duf
+    edk2-uefi-shell
     fd
     ffmpeg_7-full
     file
@@ -23,6 +24,7 @@
     neovim
     nh
     nix-output-monitor
+    npins
     nvd
     nvme-cli
     openh264
