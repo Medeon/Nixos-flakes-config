@@ -33,69 +33,108 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nix-snapd, flatpaks, sops-nix, nix-index-database, ... }@inputs: 
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager,
+              nix-snapd, flatpaks, sops-nix, nix-index-database, ... }@inputs:
     let
-      # ------------------- SYSTEM SETTINGS -------------------- #
-      systemSettings = {
-        system = "x86_64-linux";
-        hostname = "nixos";
-        timezone = "Europe/Amsterdam";
-        locale = "nl_NL.UTF-8";
-        keyLayout = "nl";
-        keyMap = "us";
-      };    
-      # ------------------- USER SETTINGS --------------------- #
-      userSettings = rec {
-        username = "ejan";
-        fullname = "Evert-Jan";
-        flakeDir = "/home/${username}/.dotfiles/nixos";
-        editor = "vim";
-      };
       lib = nixpkgs.lib;
+
       overlays = [
         (import ./overlays/psd-brave.nix)
       ];
-      pkgs = import nixpkgs {
-        system = systemSettings.system;
-        config.allowUnfree = true;
-        inherit overlays; 
-      };
-      pkgs-unstable = import nixpkgs-unstable {
-        system = systemSettings.system;
+
+      # Build a pkgs set for a given system
+      pkgsFor = system: import nixpkgs {
+        inherit system overlays;
         config.allowUnfree = true;
       };
-    in {
-      nixosConfigurations.nixos = lib.nixosSystem {
-        modules = [ 
-          ./configuration.nix 
-          nix-snapd.nixosModules.default
-          sops-nix.nixosModules.sops
-          nix-index-database.nixosModules.default
-          { 
-            services.snap.enable = true; 
-            nixpkgs.config.allowUnfree = true;
-            nixpkgs.overlays = overlays;
-          }
-        ];
-        specialArgs = {
-          inherit inputs;
-          inherit systemSettings;
-          inherit userSettings;
-          inherit pkgs-unstable;
-        };
+
+      pkgsUnstableFor = system: import nixpkgs-unstable {
+        inherit system;
+        config.allowUnfree = true;
       };
-      homeConfigurations.${userSettings.username} = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [ 
-          ./home.nix
-          sops-nix.homeManagerModules.sops
-          flatpaks.homeModules.default
-        ];
-        extraSpecialArgs = {
-          inherit inputs;
-          inherit userSettings;
-          inherit pkgs-unstable;
+
+      # -------------------------------------------------------
+      # Host discovery — every sub-directory in ./hosts is a host.
+      # Each host must contain a init.nix (plain attribute set) with:
+      #
+      #   { system, timezone, locale, keyLayout, keyMap, users }
+      #
+      # See hosts/onyx/init.nix for an example.
+      # -------------------------------------------------------
+      hostNames = builtins.filter
+        (name: (builtins.readDir ./hosts).${name} == "directory")
+        (builtins.attrNames (builtins.readDir ./hosts));
+
+      hostInitFor = host: import (./hosts + "/${host}/init.nix");
+
+      # Build a NixOS configuration for a single host.
+      mkHost = host:
+        let
+          init           = hostInitFor host;
+          system         = init.system;
+          primaryUser    = lib.head (lib.attrNames init.users);
+          userSettings   = init.users.${primaryUser} // { username = primaryUser; };
+          systemSettings = {
+            inherit (init) timezone locale keyLayout keyMap;
+            hostname = host;
+          };
+        in
+        lib.nixosSystem {
+          inherit system;
+          modules = [
+            (./hosts + "/${host}")
+            nix-snapd.nixosModules.default
+            sops-nix.nixosModules.sops
+            nix-index-database.nixosModules.default
+            {
+              networking.hostName = host;
+              services.snap.enable = true;
+              nixpkgs.config.allowUnfree = true;
+              nixpkgs.overlays = overlays;
+            }
+          ];
+          specialArgs = {
+            inherit inputs systemSettings userSettings;
+            pkgs-unstable = pkgsUnstableFor system;
+          };
         };
-      };
+
+      # Build a standalone Home Manager configuration for a single user on a host.
+      mkHome = host: user:
+        let
+          init         = hostInitFor host;
+          system       = init.system;
+          userSettings = init.users.${user} // { username = user; };
+        in
+        home-manager.lib.homeManagerConfiguration {
+          pkgs = pkgsFor system;
+          modules = [
+            (./hosts + "/${host}/home.nix")
+            sops-nix.homeManagerModules.sops
+            flatpaks.homeModules.default
+          ];
+          extraSpecialArgs = {
+            inherit inputs userSettings;
+            pkgs-unstable = pkgsUnstableFor system;
+          };
+        };
+
+    in
+    {
+      # One nixosConfiguration per host directory, named after the host.
+      nixosConfigurations = builtins.listToAttrs (
+        map (host: { name = host; value = mkHost host; }) hostNames
+      );
+
+      # One homeConfiguration per user per host, addressed as "user@host".
+      homeConfigurations = lib.foldl'
+        (acc: host:
+          let init = hostInitFor host;
+          in acc // lib.mapAttrs'
+            (user: _: lib.nameValuePair "${user}@${host}" (mkHome host user))
+            init.users
+        )
+        {}
+        hostNames;
     };
 }
