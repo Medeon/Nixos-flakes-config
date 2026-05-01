@@ -65,12 +65,12 @@
         (name: (builtins.readDir ./hosts).${name} == "directory")
         (builtins.attrNames (builtins.readDir ./hosts));
 
-      hostInitFor = host: import (./hosts + "/${host}/init.nix");
+      hostInit = host: import (./hosts + "/${host}/init.nix");
 
       # Build a NixOS configuration for a single host.
       mkHost = host:
         let
-          init           = hostInitFor host;
+          init           = hostInit host;
           system         = init.system;
           primaryUser    = lib.head (lib.attrNames init.users);
           userSettings   = init.users.${primaryUser} // { username = primaryUser; };
@@ -102,7 +102,7 @@
       # Build a standalone Home Manager configuration for a single user on a host.
       mkHome = host: user:
         let
-          init         = hostInitFor host;
+          init         = hostInit host;
           system       = init.system;
           userSettings = init.users.${user} // { username = user; };
         in
@@ -129,7 +129,7 @@
       # One homeConfiguration per user per host, addressed as "user@host".
       homeConfigurations = lib.foldl'
         (acc: host:
-          let init = hostInitFor host;
+          let init = hostInit host;
           in acc // lib.mapAttrs'
             (user: _: lib.nameValuePair "${user}@${host}" (mkHome host user))
             init.users
