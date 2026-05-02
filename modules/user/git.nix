@@ -1,6 +1,6 @@
-{ pkgs, config, userSettings, ... }:
+{ pkgs, config, userData, ... }:
 let
-  username = userSettings.username;
+  username = userData.username;
 in {
   sops.templates."git-identity" = {
     path = "/home/${username}/.config/git/identity";

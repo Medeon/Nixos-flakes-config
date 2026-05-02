@@ -1,4 +1,4 @@
-{ config, pkgs, userSettings, ... }: {
+{ config, pkgs, userData, ... }: {
 
   sops.templates."btrbk-ubuntu-ssh" = {
     path = "/run/secrets/btrbk-ssh-config";

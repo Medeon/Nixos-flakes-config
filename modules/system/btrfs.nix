@@ -1,10 +1,10 @@
-{ config, pkgs, lib, userSettings, ... }:
+{ config, pkgs, lib, userData, ... }:
 {
   options.mySystem.btrfs.enable = lib.mkEnableOption "btrfs filesystem mounts";
 
   config = lib.mkIf config.mySystem.btrfs.enable {
     fileSystems = let
-      username = userSettings.username;
+      username = userData.username;
       opts = [
         "rw"
         "noatime"

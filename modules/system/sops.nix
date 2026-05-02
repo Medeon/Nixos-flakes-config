@@ -1,6 +1,6 @@
-{ pkgs, inputs, config, userSettings, ... }:
+{ pkgs, inputs, config, userData, ... }:
 let
-  username = userSettings.username;
+  username = userData.username;
   secretspath = builtins.toString inputs.mysecrets;
 in {
   imports =

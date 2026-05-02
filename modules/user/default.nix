@@ -1,10 +1,9 @@
 { pkgs, ... }:
 {
   imports = [
-    ./applications/defaults.nix
-    ./apps.nix
     ./flatpaks.nix
     ./git.nix
+    ./home.nix
     ./programs.nix
     ./services.nix
     ./sh.nix

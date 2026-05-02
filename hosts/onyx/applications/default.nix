@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 {
   imports = [
+    ./apps.nix
     ./bluemail.nix
     ./brave.nix
     ./chromium.nix

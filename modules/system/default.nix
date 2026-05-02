@@ -3,6 +3,7 @@
   imports = [
     ./apps.nix
     ./btrbk.nix
+    ./configuration.nix
     ./envars.nix
     ./fonts.nix
     ./network.nix

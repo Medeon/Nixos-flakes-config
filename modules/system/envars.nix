@@ -1,6 +1,6 @@
-{ pkgs, userSettings, ... }:
+{ pkgs, userData, ... }:
 let 
-  username= userSettings.username;
+  username= userData.username;
 in {
   environment.sessionVariables = {
     NH_FLAKE = "/home/${username}/.dotfiles/nixos";

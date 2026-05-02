@@ -1,11 +1,11 @@
-{ pkgs, config, userSettings, ... }:
+{ pkgs, config, userData, ... }:
 {
   sops.templates."ssh-hosts" = {
-    path = "/home/${userSettings.username}/.ssh/config.d/sops-hosts";
+    path = "/home/${userData.username}/.ssh/config.d/sops-hosts";
     content = ''
       Host userver
         Hostname ${config.sops.placeholder."ssh/ubuntu/ip-address"}
-        User ${userSettings.username}
+        User ${userData.username}
         Port ${config.sops.placeholder."ssh/ubuntu/port"}
         IdentitiesOnly yes
         IdentityFile ~/.ssh/id_nixos

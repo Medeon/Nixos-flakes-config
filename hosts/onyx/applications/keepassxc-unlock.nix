@@ -1,8 +1,8 @@
-{ config, lib, pkgs, userSettings, ... }:
+{ config, lib, pkgs, userData, ... }:
 let
   keepassxc-unlock-script = pkgs.writeShellScript "keepassxc-unlock" ''
     ${pkgs.kdePackages.kwallet}/bin/kwallet-query -r KeepassXC kdewallet | \
-      ${pkgs.keepassxc}/bin/keepassxc --pw-stdin /home/${userSettings.username}/.local/share/keepassxc/Passwords.kdbx
+      ${pkgs.keepassxc}/bin/keepassxc --pw-stdin /home/${userData.username}/.local/share/keepassxc/Passwords.kdbx
   '';
 in
 {

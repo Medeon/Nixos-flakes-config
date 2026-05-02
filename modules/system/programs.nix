@@ -1,11 +1,11 @@
-{ pkgs, userSettings, ... }:
+{ pkgs, userData, ... }:
 {
   programs =  {
     nh = {
       enable = true;
       clean.enable = true;
       clean.extraArgs = "--keep-since 7d --keep 5";
-      flake = "${userSettings.flakeDir}";
+      flake = "${userData.flakeDir}";
     };
     kdeconnect.enable = true;
   };

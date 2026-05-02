@@ -1,13 +1,14 @@
-{ pkgs, userSettings, ... }:
+{ pkgs, userData, osConfig, ... }:
 let 
-  username = userSettings.username;
+  hostname = osConfig.networking.hostName;
+  username = userData.username;
   myAliases = {
     ll = "ls -la";
     sapps = "vim ~/.dotfiles/nixos/modules/system/apps.nix";
-    apps = "vim ~/.dotfiles/nixos/modules/user/apps.nix";
+    apps = "vim ~/.dotfiles/nixos/hosts/${hostname}/applications/apps.nix";
     flake = "vim ~/.dotfiles/nixos/flake.nix";
-    home = "vim ~/.dotfiles/nixos/home.nix";
-    config = "vim ~/.dotfiles/nixos/configuration.nix";
+    home = "vim ~/.dotfiles/nixos/hosts/${hostname}/home.nix";
+    config = "vim ~/.dotfiles/nixos/hosts/${hostname}/configuration.nix";
     cdnixos = "cd ~/.dotfiles/nixos";
     cdsystem = "cd ~/.dotfiles/nixos/modules/system";
     cduser = "cd ~/.dotfiles/nixos/modules/user";
