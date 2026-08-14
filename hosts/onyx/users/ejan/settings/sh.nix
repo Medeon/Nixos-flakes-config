@@ -1,13 +1,13 @@
-{ pkgs, userData, osConfig, ... }:
+{ pkgs, osConfig, ... }:
 let 
   hostname = osConfig.networking.hostName;
-  username = userData.username;
   myAliases = {
     ll = "ls -la";
-    sapps = "vim ~/.dotfiles/nixos/modules/system/apps.nix";
     apps = "vim ~/.dotfiles/nixos/hosts/${hostname}/applications/apps.nix";
+    userapps = "vim ~/.dotfiles/nixos/hosts/${hostname}/users.nix";
+    flatpaks = "vim ~/.dotfiles/nixos/hosts/${hostname}/applications/flatpaks.nix"; 
     flake = "vim ~/.dotfiles/nixos/flake.nix";
-    home = "vim ~/.dotfiles/nixos/hosts/${hostname}/home.nix";
+    home = "vim ~/.dotfiles/nixos/hosts/${hostname}/users/ejan/home.nix";
     config = "vim ~/.dotfiles/nixos/hosts/${hostname}/configuration.nix";
     cdnixos = "cd ~/.dotfiles/nixos";
     cdsystem = "cd ~/.dotfiles/nixos/modules/system";
@@ -22,7 +22,7 @@ in {
     enable = true;
     shellAliases = myAliases;
     sessionVariables = {
-      PASSWORD_STORE_DIR = "/run/media/${username}/Sec_Backup/.password-store";
+      PASSWORD_STORE_DIR = "/run/media/ejan/Sec_Backup/.password-store";
     };
   };
 }

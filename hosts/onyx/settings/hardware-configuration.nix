@@ -6,13 +6,13 @@
 {
   imports = [ 
       (modulesPath + "/installer/scan/not-detected.nix")
-      ../../modules/system/btrfs.nix
+      ./btrfs.nix
   ];
 
   mySystem.btrfs.enable = true;
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" ];
-  boot.initrd.kernelModules = [ "amdgpu" ];
+  boot.initrd.kernelModules = [ "${config.systemSettings.gpuDriver}" ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 

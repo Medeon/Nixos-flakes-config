@@ -1,19 +1,6 @@
-{ config, pkgs, userData, ... }: {
+{ config, pkgs, ... }: {
 
-  sops.templates."btrbk-ubuntu-ssh" = {
-    path = "/run/secrets/btrbk-ssh-config";
-    owner = "btrbk";
-    group = "btrbk";
-    mode = "0600";
-    content = ''
-      Host btrbk-ubuntu
-        Hostname ${config.sops.placeholder."ssh/ubuntu/ip-address"}
-        User btrbk
-        Port ${config.sops.placeholder."ssh/ubuntu/port"}
-        IdentitiesOnly yes
-        IdentityFile /var/lib/btrbk/.ssh/id_btrbk_key
-    '';
-  };
+  services.openssh.enable = true;
 
   programs.ssh = {
     startAgent = false;
@@ -23,4 +10,10 @@
   environment.variables = {
     SSH_ASKPASS_REQUIRE = "prefer";
   };
+  
+  environment.systemPackages = [
+    pkgs.openssh
+    pkgs.sshfs
+    pkgs.sshpass
+  ];  
 }

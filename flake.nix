@@ -24,7 +24,7 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # --------------------------- PRIVATE REPOSITORY --------------------------- #
+    # --------------------------- PRIVATE REPOSITORY -------------------------- #
     mysecrets = {
       url = "git+ssh://git@gitlab.com/ejandev/nix-secrets.git?ref=main&shallow=1";
       flake = false;
@@ -33,11 +33,20 @@
 
   outputs = { self, ... }@inputs:
     let
-      lib = inputs.nixpkgs.lib;
-
+      lib          = inputs.nixpkgs.lib;
       overlays = [
         (import ./overlays/psd-brave.nix)
       ];
+      
+      fromJsonFile = path: builtins.fromJSON (builtins.readFile path);
+
+      mkPrivateData = host:
+        let base = "${self}/hosts/${host}/private-data";
+        in {
+          users   = fromJsonFile "${base}/users.json";
+          network = fromJsonFile "${base}/network.json";
+          ssh     = fromJsonFile "${base}/ssh.json";
+        };
 
       hostNames = builtins.filter
         (name: (builtins.readDir ./hosts).${name} == "directory")
@@ -48,14 +57,9 @@
       # Build a NixOS configuration for a single host.
       mkHost = host:
         let
-          init           = hostInit host;
-          system         = init.system;
-          primaryUser    = lib.head (lib.attrNames init.users);
-          userData  = init.users.${primaryUser} // { username = primaryUser; };
-          hostSpecs = {
-            inherit (init) timezone locale keyLayout keyMap;
-            hostname = host;
-          };
+          init          = (hostInit host) // { hostname = host; };
+          privateData   = mkPrivateData host;
+          system        = init.system;
           pkgs-unstable = import inputs.nixpkgs-unstable {
             inherit system;
             config.allowUnfree = true;
@@ -69,28 +73,24 @@
             inputs.nix-snapd.nixosModules.default
             inputs.sops-nix.nixosModules.sops
             inputs.nix-index-database.nixosModules.default
+            inputs.flatpaks.nixosModules.default
             {
               networking.hostName = host;
               services.snap.enable = true;
               nixpkgs.config.allowUnfree = true;
               nixpkgs.overlays = overlays;
-              home-manager = {
-                users.${primaryUser} = import (./hosts + "/${host}/home.nix");
-                extraSpecialArgs = {
-                  inherit inputs userData pkgs-unstable;
-                };
-                sharedModules = [
-                  inputs.sops-nix.homeManagerModules.sops
-                  inputs.flatpaks.homeModules.default
-                ];
-              };
+              home-manager.useGlobalPkgs = false;
+              home-manager.useUserPackages = true; 
+              home-manager.sharedModules = [
+                inputs.sops-nix.homeManagerModules.sops
+              ];
+              home-manager.extraSpecialArgs = { inherit inputs pkgs-unstable init privateData; };
             }
           ];
           specialArgs = {
-            inherit inputs pkgs-unstable hostSpecs userData;
+            inherit inputs pkgs-unstable init privateData;
           };
         };
-
     in
     {
       # One nixosConfiguration per host directory, named after the host.

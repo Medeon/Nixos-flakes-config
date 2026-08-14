@@ -1,14 +1,11 @@
 { pkgs, ... }:
 {
   imports = [
-    ./flatpaks.nix
     ./git.nix
+    ./gpg.nix
     ./home.nix
-    ./programs.nix
-    ./services.nix
-    ./sh.nix
-    ./sops.nix
-    ./ssh.nix
+    ./options.nix
+    ./psd.nix
     ./vim.nix
   ];
 }

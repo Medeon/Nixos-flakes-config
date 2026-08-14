@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, privateData, ... }:
 let
   commonSettings = {
     transaction_log    = "/var/log/btrbk.log";
@@ -9,7 +9,23 @@ let
     snapshot_preserve     = "4h 3d";
     preserve_day_of_week  = "monday";
   };
-in {
+in 
+{
+  sops.templates."btrbk-ubuntu-ssh" = {
+    path = "/run/secrets/btrbk-ssh-config";
+    owner = "btrbk";
+    group = "btrbk";
+    mode = "0600";
+    content = ''
+      Host btrbk-ubuntu
+        Hostname ${privateData.ssh.ubuntu."ip-address"}
+        User btrbk
+        Port ${toString privateData.ssh.ubuntu.port}
+        IdentitiesOnly yes
+        IdentityFile /var/lib/btrbk/.ssh/id_btrbk_key
+    '';
+  };
+  
   services.btrbk = {
     sshAccess = [
       {
@@ -59,7 +75,7 @@ in {
       after  = [ "sops-install-secrets.service" ];
     };
   };
-  
+     
   # Common btrbk root directory rules
   systemd.tmpfiles.rules = [
     "d /btrfs-toplvl/@home-snapshots/btrbk_snapshots 0755 root root"

@@ -1,18 +1,17 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 {
   imports = [
-    ./apps.nix
-    ./btrbk.nix
     ./configuration.nix
-    ./envars.nix
+    ./flatpak.nix
     ./fonts.nix
+    ./kde.nix
     ./network.nix
-    ./pam.nix
-    ./programs.nix
-    ./services.nix
-    ./sops.nix
+    ./nh.nix
+    ./options.nix
+    ./snap.nix
     ./ssh.nix
     ./sudo.nix
     ./systemd.nix
+    ./yubikey.nix
   ];
 }

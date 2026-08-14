@@ -1,7 +1,13 @@
-{ config, lib, pkgs, inputs, ... }:
+{ ... }:
 {
   imports = [
     ./configuration.nix
-    ./hardware-configuration.nix
+    ./settings/default.nix
+    ./applications/default.nix
+    ./users.nix
   ];
+
+  config.home-manager.users = {
+    ejan = import ./users/ejan/home.nix;
+  };
 }

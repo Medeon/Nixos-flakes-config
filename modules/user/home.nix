@@ -11,12 +11,14 @@
     home.stateVersion = "25.11"; # Please read the comment before changing.
     
     nixpkgs.config.allowUnfree = true; 
-    # The home.packages option allows you to install Nix packages into your
-    # environment.
-    home.packages = with pkgs; [
-      # standard packages
-    ];
-
+    
+    home.username = config.userSettings.username;
+    
+    programs = {
+      command-not-found.enable = true;
+      htop.enable = true;
+    };
+    
     # Home Manager is pretty good at managing dotfiles. The primary way to manage
     # plain files is through 'home.file'.
     home.file = {

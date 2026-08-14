@@ -2,22 +2,15 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, pkgs-unstable, lib, hostSpecs, ... }:
+{ config, pkgs, pkgs-unstable, lib, init, ... }:
 
-let 
-  locale = hostSpecs.locale;  
+let
+  locale = init.locale;
 in {
   config = {    
-    # Enable networking
-    networking.hostName = hostSpecs.hostname;
-    networking.networkmanager.enable = true;
-    # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-    # Configure network proxy if necessary
-    # networking.proxy.default = "http://user:password@proxy:port/";
-    # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-    
+        
     # Set your time zone.
-    time.timeZone = hostSpecs.timezone;
+    time.timeZone = init.timezone;
     
     # Select internationalisation properties.
     i18n.defaultLocale = locale;
@@ -36,18 +29,30 @@ in {
     
     # Configure keymap in X11
     services.xserver.xkb = {
-      layout = hostSpecs.keyLayout;
-      variant = hostSpecs.keyMap;
+      layout = init.keyLayout;
+      variant = init.keyMap;
     };
 
     # Configure console keymap
-    console.keyMap = hostSpecs.keyMap;
+    console.keyMap = init.keyMap;
 
     # List packages installed in system profile. To search, run:
     # $ nix search wget
-    environment.systemPackages = with pkgs; [ 
-      # For systemwide packages look at: ~/.dotfiles/nixos/modules/system/apps.nix. The alias is "sapps".
-    ];
+    environment.systemPackages = (with pkgs; [ 
+      duf
+      htop
+      fd
+      git
+      git-crypt
+      git-lfs
+      neofetch
+      nvd
+      nix-output-monitor
+      ripgrep
+      sops
+      tmux
+      wget
+    ]);
 
     # Some programs need SUID wrappers, can be configured further or are
     # started in user sessions.

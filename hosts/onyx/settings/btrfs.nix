@@ -1,10 +1,9 @@
-{ config, pkgs, lib, userData, ... }:
+{ config, pkgs, lib, privateData, ... }:
 {
   options.mySystem.btrfs.enable = lib.mkEnableOption "btrfs filesystem mounts";
 
   config = lib.mkIf config.mySystem.btrfs.enable {
     fileSystems = let
-      username = userData.username;
       opts = [
         "rw"
         "noatime"
@@ -16,6 +15,35 @@
       ];
       fsType = "btrfs";
       device = "/dev/disk/by-uuid/a94905d3-ebd3-4c87-a297-70d53cd25079";
+
+      homeUsers = lib.filterAttrs (_: u: u.createHome or false) privateData.users;
+
+      userBtrfsMounts = lib.concatMapAttrs (name: _: {
+        "/home/${name}/.dotfiles" = {
+          inherit fsType device;
+          options = opts ++ [ "subvol=@home/${name}/.dotfiles" ];
+        };
+        "/home/${name}/Muziek" = {
+          inherit fsType device;
+          options = opts ++ [ "subvol=@home/${name}/Muziek" ];
+        };
+      }) homeUsers;
+
+      userBindMounts = lib.concatMapAttrs (name: _: {
+        "/home/${name}/.pki" = {
+          device = "/home/${name}/.dotfiles/.pki";
+          options = [ "bind" ];
+        };
+        "/home/${name}/.cache" = {
+          device = "/home/${name}/.dotfiles/.cache";
+          options = [ "bind" ];
+        };
+        "/home/${name}/.var" = {
+          device = "/home/${name}/.dotfiles/.var";
+          options = [ "bind" ];
+        };
+      }) homeUsers;
+
     in {
       "/" = {
         inherit fsType device;
@@ -50,26 +78,6 @@
         inherit fsType device;
         options = opts ++ [ "subvol=@home-snapshots" ];
       };
-      "/home/${username}/.dotfiles" = {
-        inherit fsType device;
-        options = opts ++ [ "subvol=@home/${username}/.dotfiles" ];
-      };
-      "/home/${username}/Muziek" = {
-        inherit fsType device;
-        options = opts ++ [ "subvol=@home/${username}/Muziek" ];
-      };
-      "/home/${username}/.pki" = {
-        device = "/home/${username}/.dotfiles/.pki";
-        options = [ "bind" ];
-      };
-      "/home/${username}/.cache" = {
-        device = "/home/${username}/.dotfiles/.cache";
-        options = [ "bind" ];
-      };
-      "/home/${username}/.var" = {
-        device = "/home/${username}/.dotfiles/.var";
-        options = [ "bind" ];
-      };
-    };
+    } // userBtrfsMounts // userBindMounts;
   };
 }

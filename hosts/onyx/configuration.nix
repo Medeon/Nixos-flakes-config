@@ -1,52 +1,28 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ config, pkgs, pkgs-unstable, lib, userData, ... }:
-
-let
-  username = userData.username;
-  fullname = userData.fullname;
-in {
+{ config, pkgs, pkgs-unstable, lib, init, inputs, privateData, ... }:
+{
   imports = [
     ../../modules/system/default.nix
+    ./applications/default.nix
   ];
   
   config = {
-    # systemSettings = {
-    #   #TO DO
-    # };
-    
-    # Define a user account. Don't forget to set a password with ‘passwd’.
-    sops.secrets."user/${username}/password".neededForUsers = true;
-    
-    users.users.${username} = {
-      isNormalUser = true;
-      description = fullname;
-      hashedPasswordFile = config.sops.secrets."user/${username}/password".path;
-      extraGroups = [ "networkmanager" "wheel" ];
-      packages = with pkgs; [
-        #  For user packages look at: ~/.dotfiles/nixos/modules/user/apps.nix. The alias is "apps".  
-      ];
+    # For more information on these options consult: /modules/system/options.nix
+    systemSettings = {
+      flakeDir = "/home/${init.sysAdmin}/.dotfiles/nixos";
+      gpuDriver = "amdgpu";
+      defaultGateway = privateData.network.defaultGateway;
+      staticIp = privateData.network.staticIp;
+      dnsServers = privateData.network.dnsServers;
     };
     
-    # List packages installed in system profile. To search, run:
-    # $ nix search wget
-    environment.systemPackages = with pkgs; [ 
-      # For systemwide packages look at: ~/.dotfiles/nixos/modules/system/apps.nix. The alias is "sapps".
-    ];
-    
-    # Enable the KDE Desktop environment.
-    services.displayManager.sddm.enable = true;
-    services.desktopManager.plasma6.enable = true;
-    #services.displayManager.sddm.autoLogin.enable = true;
-    #services.displayManager.sddm.autoLogin.user = "ejan";
-
     # Enable the X11 windowing system.
     services.xserver.enable = true;
-    services.xserver.videoDrivers = [ "amdgpu" ];
+    services.xserver.videoDrivers = [ "${config.systemSettings.gpuDriver}" ];
     # Enable touchpad support (enabled default in most desktopManager).
     # services.xserver.libinput.enable = true;
+    services.printing.enable = true;
+    services.avahi.enable = true;
+    services.avahi.nssmdns4 = true;
 
     # Enable sound with pipewire.
     services.pulseaudio.enable = false;
@@ -63,7 +39,6 @@ in {
       # no need to redefine it in your config for now)
       #media-session.enable = true;
     };
-
     hardware.bluetooth.enable = true;
   };
 }

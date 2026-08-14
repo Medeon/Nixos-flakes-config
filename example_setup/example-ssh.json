@@ -1,0 +1,15 @@
+{
+    "host1": {
+        "hostname": "host1",
+        "user": "....",
+        "ip-address": "....",
+        "port": 2020
+    },
+
+    "host2": {
+        "hostname": "host2",
+        "user": "....",
+        "ip-address": "....",
+        "port": 2121
+    }
+}
