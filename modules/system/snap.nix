@@ -1,7 +1,9 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
 {
-  systemd.tmpfiles.rules = [
-    "L /var/lib/snapd/hostfs/etc/passwd - - - - /etc/passwd" # Bind mounts to snapd hostfs
-    "L /var/lib/snapd/hostfs/etc/group - - - - /etc/group"   # for access to etc.. passwd & group 
-  ];
+  config = lib.mkIf config.systemSettings.snap.enable {
+    systemd.tmpfiles.rules = [
+      "L /var/lib/snapd/hostfs/etc/passwd - - - - /etc/passwd" # Bind mounts to snapd hostfs
+      "L /var/lib/snapd/hostfs/etc/group - - - - /etc/group"   # for access to etc.. passwd & group
+    ];
+  };
 }

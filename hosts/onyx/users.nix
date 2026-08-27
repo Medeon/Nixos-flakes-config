@@ -3,9 +3,7 @@
   config = {
     # Define a user account. Don't forget to set a password with 'passwd'.
     sops.secrets."user/ejan/password".neededForUsers = true;
-
-    # List packages installed in system profile. To search, run:
-    # $ nix search wget
+    
     users.users.ejan = {
       isNormalUser = true;
       createHome = true;

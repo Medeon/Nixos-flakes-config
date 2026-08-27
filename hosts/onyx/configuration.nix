@@ -13,32 +13,21 @@
       defaultGateway = privateData.network.defaultGateway;
       staticIp = privateData.network.staticIp;
       dnsServers = privateData.network.dnsServers;
+      kde = {
+        enable = true;
+        wayland = true;
+      };
+      ssh.enable = true;
+      x11.enable = false;
+      yubikey.enable = true;
+      pipewire.enable = true;
+      flatpak.enable = true;
+      bluetooth.enable = true;
+      nh.enable = true;
+      snap.enable = true;
     };
-    
-    # Enable the X11 windowing system.
-    services.xserver.enable = true;
-    services.xserver.videoDrivers = [ "${config.systemSettings.gpuDriver}" ];
-    # Enable touchpad support (enabled default in most desktopManager).
-    # services.xserver.libinput.enable = true;
     services.printing.enable = true;
     services.avahi.enable = true;
     services.avahi.nssmdns4 = true;
-
-    # Enable sound with pipewire.
-    services.pulseaudio.enable = false;
-    security.rtkit.enable = true;
-    services.pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      # If you want to use JACK applications, uncomment this
-      #jack.enable = true;
-
-      # use the example session manager (no others are packaged yet so this is enabled by default,
-      # no need to redefine it in your config for now)
-      #media-session.enable = true;
-    };
-    hardware.bluetooth.enable = true;
   };
 }

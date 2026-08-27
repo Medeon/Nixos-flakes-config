@@ -26,15 +26,15 @@ in {
       LC_TELEPHONE = locale;
       LC_TIME = locale;
     };
-    
-    # Configure keymap in X11
+      
+    # Configure console keymap
+    console.keyMap = init.keyMap;
+
+     # Configure keymap in X11
     services.xserver.xkb = {
       layout = init.keyLayout;
       variant = init.keyMap;
-    };
-
-    # Configure console keymap
-    console.keyMap = init.keyMap;
+    };  
 
     # List packages installed in system profile. To search, run:
     # $ nix search wget
@@ -42,7 +42,6 @@ in {
       duf
       htop
       fd
-      git
       git-crypt
       git-lfs
       neofetch
