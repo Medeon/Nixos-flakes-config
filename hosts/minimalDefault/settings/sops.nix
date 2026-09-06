@@ -1,4 +1,4 @@
-{ inputs, config, init, ... }:
+{ pkgs, inputs, config, init, ... }:
 let
   user = init.sysAdmin;
   secretspath = builtins.toString inputs.mysecrets;
@@ -18,9 +18,6 @@ in {
       generateKey = true;
     };
 
-    secrets."keys/ssh/btrbk/id_btrbk_key/private_key" = {
-      owner = "btrbk";
-    };
     secrets."user/${user}/password" = {};
   };
 }

@@ -35,7 +35,7 @@ Examples of the structure of these files are in the `/example_setup` directory.
 
 ### Bootstrapping on a new machine
 
-1. Download your Nixos iso image [from here](https://nixos.org/download/#nixos-iso) and install Nixos using a liveusb.  
+1. Download your Nixos iso image from [here](https://nixos.org/download/#nixos-iso) and install Nixos using a liveusb.  
    Change the hostname to your preference and reboot. 
 
 2. Install the necessary packages (not in PATH by default on NixOS), don't leave the nix-shell until your done:
@@ -60,12 +60,12 @@ and the access key, derived from the ssh host key by using the ssh-to-age comman
    $ cd ~/.dotfiles/nixos
    ```
 
-6. Create your minimal host directory at `./hosts/<hostname>` with at least these modules: init.nix, users.nix,  
-   configuration.nix, default.nix and copy `/etc/nixos/hardware-configuration` in the root of your host  
-   directory. (A minimal default host configuration will be added to hosts in the near future)
+6. Rename the minimalDefault host directory to your hostname. Copy `/etc/nixos/hardware-configuration`  
+   to the root of your new host.  
    ```bash
+   $ mv ./host/minimalDefault ./host/<hostname>
    $ sudo -i
-   $ cp /etc/nixos/hardware-configuration/ /path/to/.dotfiles/nixos/host/<hostname>
+   $ cp /etc/nixos/hardware-configuration/ /full/path/to/.dotfiles/nixos/host/<hostname>
    $ exit
    ```   
 7. Create a sops encrypted secrets.yaml file according to the structure given in the `example-secrets.yaml` file.  
@@ -77,6 +77,8 @@ and the access key, derived from the ssh host key by using the ssh-to-age comman
    backup. If you reuse an existing git-crypt key, create a folder in the root of your dotfiles .git folder, copy the key  
    in there & unlock the repo:
    ```bash
+   $ cd ~/.dotfiles/nixos
+   
    # If you want to initialize a new git-crypt repo
    $ git-crypt init
    
@@ -87,10 +89,10 @@ and the access key, derived from the ssh host key by using the ssh-to-age comman
    ```
 
 9. Declare sensitive data with the JSON files in the `private-data` directory. Verify the JSON files are readable  
-   plaintext. Make sure your init.nix file contains the correct values. Then proceed with:
+   plaintext. Make sure your init.nix file contains the correct values. Adapt your configuration.nix, default.nix  
+   and your users home.nix Then proceed with:
    ```bash
    # stage the changes you made to your dotfiles repo & switch to your new build:
-   $ cd ~/.dotfiles/nixos
    $ git add .
    $ nixos-rebuild switch --flake .#<hostname>
    ```

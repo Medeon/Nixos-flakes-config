@@ -1,7 +1,7 @@
 { config, ... }:
+
 {
   imports = [
     ./apps.nix
-    ./flatpaks.nix
   ];
 }

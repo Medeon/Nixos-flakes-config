@@ -1,4 +1,4 @@
-{ config, pkgs, lib, osConfig, ... }:
+{ config, pkgs, ... }:
 {
   imports = [
     ../../../../modules/user/default.nix

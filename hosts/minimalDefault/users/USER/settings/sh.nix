@@ -4,10 +4,9 @@ let
   myAliases = {
     ll = "ls -la";
     apps = "vim ~/.dotfiles/nixos/hosts/${hostname}/applications/apps.nix";
-    myapps = "vim ~/.dotfiles/nixos/hosts/${hostname}/users/ejan/applications/apps.nix";
-    flatpaks = "vim ~/.dotfiles/nixos/hosts/${hostname}/applications/flatpaks.nix"; 
+    myapps = "vim ~/.dotfiles/nixos/hosts/${hostname}/users/USER/applications/apps.nix";
     flake = "vim ~/.dotfiles/nixos/flake.nix";
-    home = "vim ~/.dotfiles/nixos/hosts/${hostname}/users/ejan/home.nix";
+    home = "vim ~/.dotfiles/nixos/hosts/${hostname}/users/USER/home.nix";
     config = "vim ~/.dotfiles/nixos/hosts/${hostname}/configuration.nix";
     cdnixos = "cd ~/.dotfiles/nixos";
     cdsystem = "cd ~/.dotfiles/nixos/modules/system";
@@ -21,8 +20,5 @@ in {
   programs.bash = {
     enable = true;
     shellAliases = myAliases;
-    sessionVariables = {
-      PASSWORD_STORE_DIR = "/run/media/ejan/Sec_Backup/.password-store";
-    };
   };
 }

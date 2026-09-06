@@ -1,4 +1,4 @@
-{ config, pkgs, lib, osConfig, inputs, privateData, ... }:
+{ config, pkgs, privateData, ... }:
 {
   imports = [
     ../../../../modules/user/default.nix

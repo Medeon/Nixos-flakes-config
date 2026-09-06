@@ -11,21 +11,6 @@ let
   };
 in 
 {
-  sops.templates."btrbk-ubuntu-ssh" = {
-    path = "/run/secrets/btrbk-ssh-config";
-    owner = "btrbk";
-    group = "btrbk";
-    mode = "0600";
-    content = ''
-      Host btrbk-ubuntu
-        Hostname ${privateData.ssh.ubuntu."ip-address"}
-        User btrbk
-        Port ${toString privateData.ssh.ubuntu.port}
-        IdentitiesOnly yes
-        IdentityFile /var/lib/btrbk/.ssh/id_btrbk_key
-    '';
-  };
-  
   services.btrbk = {
     sshAccess = [
       {
@@ -35,7 +20,7 @@ in
     ];
 
     # Runs btrbk snapshot 
-    instances."snapshot" = {
+    instances."btrbk" = {
       onCalendar   = "daily";
       snapshotOnly = true;
       settings     = commonSettings // {
@@ -53,14 +38,15 @@ in
       settings   = commonSettings // {
         ssh_identity = "/var/lib/btrbk/.ssh/id_btrbk_key";
         ssh_user     = "btrbk";
+        ssh_port        = toString privateData.ssh.ubuntu.port;
         stream_compress = "zstd";
         target_preserve_min = "3h";
         target_preserve     = "24h 7d 1m";
         volume."/btrfs-toplvl" = {
           subvolume."@home" = {
             snapshot_create = "no";
+            target = "ssh://${privateData.ssh.ubuntu."ip-address"}/btrfs-toplvl/@backup/btrbk/nixos";
           };
-          target = "ssh://btrbk-ubuntu/btrfs-toplvl/@backup/btrbk/nixos";
         };
       };
     };
@@ -71,7 +57,7 @@ in
       after  = [ "sops-install-secrets.service" "network-online.target" ];
       wants  = [ "network-online.target" ];
     };
-    btrbk-snapshot = {
+    btrbk-btrbk = {
       after  = [ "sops-install-secrets.service" ];
     };
   };
@@ -80,6 +66,5 @@ in
   systemd.tmpfiles.rules = [
     "d /btrfs-toplvl/@home-snapshots/btrbk_snapshots 0755 root root"
     "f /var/log/btrbk.log 0640 btrbk btrbk"
-    "L+ /var/lib/btrbk/.ssh/config - - - - /run/secrets/btrbk-ssh-config"
   ];
 }

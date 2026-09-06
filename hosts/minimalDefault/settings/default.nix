@@ -1,8 +1,6 @@
 { config, ... }: {
   
   imports = [
-    ./btrbk.nix
-    ./pam.nix
     ./sops.nix
   ];
 

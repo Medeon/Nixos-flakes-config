@@ -12,9 +12,24 @@
         description = "Pick your video driver Kernel Module.";
       };
 
-      staticIp = lib.mkOption {
-        type = lib.types.str;
-        description = "Static IP address for the primary network interface.";
+      staticIp = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Whether to configure a static IP on the primary network interface.";
+        };
+
+        address = lib.mkOption {
+          type = lib.types.str;
+          default = "";
+          description = "Static IP address for the primary network interface.";
+        };
+
+        prefixLength = lib.mkOption {
+          type = lib.types.int;
+          default = 24;
+          description = "Prefix length (subnet mask) for the static IP address.";
+        };
       };
 
       defaultGateway = lib.mkOption {

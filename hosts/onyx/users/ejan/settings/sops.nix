@@ -1,4 +1,4 @@
-{ pkgs, config, inputs, ... }:
+{ config, inputs, ... }:
 let
   secretspath = builtins.toString inputs.mysecrets;
 in {

@@ -1,0 +1,14 @@
+{ config, pkgs, pkgs-unstable, ... }:
+{
+  config = {
+    home.packages = (with pkgs; [
+      #    
+    ])
+
+    ++
+
+    (with pkgs-unstable; [
+      #
+    ]);
+  };
+}

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, osConfig, inputs, privateData, ... }:
 {
   imports = [
     ./sh.nix

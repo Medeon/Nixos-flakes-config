@@ -6,7 +6,7 @@
 {
   imports = [ 
       (modulesPath + "/installer/scan/not-detected.nix")
-      ./btrfs.nix
+      ./settings/btrfs.nix
   ];
 
   mySystem.btrfs.enable = true;

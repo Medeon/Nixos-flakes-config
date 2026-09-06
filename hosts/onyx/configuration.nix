@@ -2,7 +2,6 @@
 {
   imports = [
     ../../modules/system/default.nix
-    ./applications/default.nix
   ];
   
   config = {
@@ -11,7 +10,11 @@
       flakeDir = "/home/${init.sysAdmin}/.dotfiles/nixos";
       gpuDriver = "amdgpu";
       defaultGateway = privateData.network.defaultGateway;
-      staticIp = privateData.network.staticIp;
+      staticIp = {
+        enable = true;
+        address = privateData.network.staticIp;
+        prefixLength = 24;
+      };
       dnsServers = privateData.network.dnsServers;
       kde = {
         enable = true;
