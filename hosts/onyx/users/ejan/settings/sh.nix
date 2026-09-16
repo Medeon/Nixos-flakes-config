@@ -16,6 +16,7 @@ let
     df = "df -h";
     free = "free -m";
     rm = "rm -i";
+    btrbk = "btrbk -c /etc/btrbk/all.conf";
   };
 in {
   programs.bash = {

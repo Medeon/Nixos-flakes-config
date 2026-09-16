@@ -1,6 +1,9 @@
 { config, pkgs, lib, privateData, ... }:
 let
-  commonSettings = {
+  hostname = privateData.ssh.ubuntu."ip-address";
+  port = toString privateData.ssh.ubuntu.port;
+  
+  snapshotSettings = {
     transaction_log    = "/var/log/btrbk.log";
     stream_buffer      = "256m";
     timestamp_format   = "long";
@@ -8,6 +11,14 @@ let
     snapshot_preserve_min = "3h";
     snapshot_preserve     = "4h 3d";
     preserve_day_of_week  = "monday";
+  };
+
+  backupSettings = {
+    ssh_identity        = "/var/lib/btrbk/.ssh/id_btrbk_key";
+    ssh_user            = "btrbk";
+    stream_compress     = "zstd";
+    target_preserve_min = "3h";
+    target_preserve     = "24h 7d 1m";
   };
 in 
 {
@@ -20,10 +31,10 @@ in
     ];
 
     # Runs btrbk snapshot 
-    instances."btrbk" = {
+    instances."snapshot" = {
       onCalendar   = "daily";
       snapshotOnly = true;
-      settings     = commonSettings // {
+      settings     = snapshotSettings // {
         volume."/btrfs-toplvl" = {
           subvolume."@home" = {
             snapshot_create = "always";
@@ -35,17 +46,24 @@ in
     # Runs btrbk backup 
     instances."backup" = {
       onCalendar = "daily";
-      settings   = commonSettings // {
-        ssh_identity = "/var/lib/btrbk/.ssh/id_btrbk_key";
-        ssh_user     = "btrbk";
-        ssh_port        = toString privateData.ssh.ubuntu.port;
-        stream_compress = "zstd";
-        target_preserve_min = "3h";
-        target_preserve     = "24h 7d 1m";
+      settings   = snapshotSettings // backupSettings // {
         volume."/btrfs-toplvl" = {
           subvolume."@home" = {
             snapshot_create = "no";
-            target = "ssh://${privateData.ssh.ubuntu."ip-address"}/btrfs-toplvl/@backup/btrbk/nixos";
+            target = "ssh://${hostname}:${port}/btrfs-toplvl/@backup/btrbk/nixos";
+          };
+        };
+      };
+    };
+
+    # Combined instance for manual on-demand runs and unified list inspection.
+    instances."btrbk" = {
+      onCalendar = null;
+      settings   = snapshotSettings // backupSettings // {
+        volume."/btrfs-toplvl" = {
+          subvolume."@home" = {
+            snapshot_create = "always";
+            target = "ssh://${hostname}:${port}/btrfs-toplvl/@backup/btrbk/nixos";
           };
         };
       };
@@ -57,7 +75,7 @@ in
       after  = [ "sops-install-secrets.service" "network-online.target" ];
       wants  = [ "network-online.target" ];
     };
-    btrbk-btrbk = {
+    btrbk-snapshot = {
       after  = [ "sops-install-secrets.service" ];
     };
   };
